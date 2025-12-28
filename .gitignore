@@ -1,0 +1,32 @@
+# Backend
+backend/data/
+backend/mongo_bin/
+backend/mongodb-*.tgz
+
+# Build
+app/build/
+*.lock
+*.log
+
+# Dependencies
+node_modules/
+.pub-cache/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+*.env
+.env.local
+
+# Large files
+*.tar.gz
+*.tgz
+*.zip
+

@@ -1,0 +1,1653 @@
+basePath: /api
+definitions:
+  admin.AdminLoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  admin.DashboardStats:
+    properties:
+      total_orders:
+        type: integer
+      total_products:
+        type: integer
+      total_sales:
+        type: number
+      total_users:
+        type: integer
+    type: object
+  cart.AddToCartInput:
+    properties:
+      product_id:
+        description: 商品 ID
+        type: integer
+      quantity:
+        description: 数量，至少为 1
+        minimum: 1
+        type: integer
+      sku_id:
+        description: SKU ID (可选)
+        type: integer
+    required:
+    - product_id
+    - quantity
+    type: object
+  chat.SendNotificationInput:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  controllers.CreateAddressInput:
+    properties:
+      city:
+        type: string
+      detail_address:
+        type: string
+      district:
+        type: string
+      is_default:
+        type: boolean
+      phone:
+        type: string
+      province:
+        type: string
+      receiver_name:
+        type: string
+    required:
+    - city
+    - detail_address
+    - district
+    - phone
+    - province
+    - receiver_name
+    type: object
+  controllers.LoginInput:
+    properties:
+      email:
+        description: 邮箱 (与 Username 二选一)
+        type: string
+      password:
+        description: 密码必填
+        type: string
+      username:
+        description: 用户名 (与 Email 二选一)
+        type: string
+    required:
+    - password
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  models.Address:
+    properties:
+      city:
+        description: 城市
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      detail_address:
+        description: 详细地址
+        type: string
+      district:
+        description: 区/县
+        type: string
+      id:
+        type: integer
+      is_default:
+        description: 是否为默认地址
+        type: boolean
+      phone:
+        description: 联系电话
+        type: string
+      province:
+        description: 省份
+        type: string
+      receiver_name:
+        description: 收货人姓名
+        type: string
+      updatedAt:
+        type: string
+      user_id:
+        description: 关联的用户 ID
+        type: integer
+    type: object
+  models.CartItem:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      product:
+        allOf:
+        - $ref: '#/definitions/models.Product'
+        description: 预加载的商品信息
+      product_id:
+        description: 关联的商品 ID
+        type: integer
+      quantity:
+        description: 购买数量
+        type: integer
+      selected:
+        description: 是否选中
+        type: boolean
+      sku_id:
+        description: 关联的 SKU ID (如果商品有规格)
+        type: integer
+      updatedAt:
+        type: string
+      user_id:
+        description: 关联的用户 ID
+        type: integer
+    type: object
+  models.ChatMessage:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      is_read:
+        type: boolean
+      receiver_id:
+        description: 接收者 ID
+        type: integer
+      sender_id:
+        description: 发送者 ID (如果是客服，则是 AdminUser ID；如果是用户，则是 User ID)
+        type: integer
+      sender_type:
+        description: user, admin
+        type: string
+      type:
+        description: text, image
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.Notification:
+    properties:
+      User:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 添加关联关系
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      is_read:
+        type: boolean
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.Order:
+    properties:
+      address:
+        allOf:
+        - $ref: '#/definitions/models.Address'
+        description: 收货地址快照 (简化处理，实际应复制地址信息)
+      address_id:
+        description: 收货地址 ID
+        type: integer
+      created_at:
+        description: Override for custom formatting if needed, but here just for key
+          name
+        type: string
+      id:
+        description: Override ID to ensure lowercase JSON
+        type: integer
+      items:
+        description: 订单包含的商品项
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      order_no:
+        description: 订单编号，唯一
+        type: string
+      status:
+        description: '订单状态: 0-待支付, 1-待发货, 2-待收货, 3-待评价(已完成), 4-已取消, 5-售后中'
+        type: integer
+      total_amount:
+        description: 订单总金额
+        type: number
+      updated_at:
+        type: string
+      user_id:
+        description: 关联的用户 ID
+        type: integer
+    type: object
+  models.OrderItem:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      order_id:
+        description: 关联的订单 ID
+        type: integer
+      price:
+        description: 购买时的单价
+        type: number
+      product_id:
+        description: 商品 ID
+        type: integer
+      product_image:
+        description: 商品图片 (快照)
+        type: string
+      product_name:
+        description: 商品名称 (快照)
+        type: string
+      quantity:
+        description: 购买数量
+        type: integer
+      sku_id:
+        description: SKU ID
+        type: integer
+      sku_name:
+        description: SKU 名称 (快照)
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Product:
+    properties:
+      category_id:
+        description: 分类 ID
+        type: integer
+      cover_image:
+        description: 封面图片 URL
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        description: 商品描述
+        type: string
+      id:
+        type: integer
+      images:
+        description: 商品轮播图列表 (PostgreSQL 数组类型)
+        items:
+          type: string
+        type: array
+      name:
+        description: 商品名称
+        type: string
+      price:
+        description: 商品基础价格
+        type: number
+      reviews:
+        description: 关联的评价列表
+        items:
+          $ref: '#/definitions/models.Review'
+        type: array
+      skus:
+        description: 关联的 SKU 列表
+        items:
+          $ref: '#/definitions/models.ProductSKU'
+        type: array
+      status:
+        description: '商品状态: 1-上架, 0-下架'
+        type: integer
+      stock:
+        description: 总库存
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.ProductSKU:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      image:
+        description: SKU 图片
+        type: string
+      name:
+        description: SKU 名称 (如 "红色 XL")
+        type: string
+      price:
+        description: SKU 价格
+        type: number
+      product_id:
+        description: 关联的商品 ID
+        type: integer
+      specs:
+        description: 规格详情 JSON 字符串
+        type: string
+      stock:
+        description: SKU 库存
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.Review:
+    properties:
+      content:
+        description: 评价内容
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      images:
+        description: 评价图片(JSON array string)
+        type: string
+      order_id:
+        type: integer
+      product_id:
+        type: integer
+      rating:
+        description: 评分 1-5
+        type: integer
+      reply:
+        description: 商家回复
+        type: string
+      status:
+        description: 0:隐藏 1:显示 (默认1)
+        type: integer
+      updatedAt:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 关联用户信息
+      user_id:
+        type: integer
+    type: object
+  models.SearchHistory:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      keyword:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      avatar:
+        description: 用户头像 URL
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        description: 邮箱，必须唯一且不能为空
+        type: string
+      id:
+        type: integer
+      role:
+        description: 用户角色 (user/admin)，默认为 user
+        type: string
+      updatedAt:
+        type: string
+      username:
+        description: 用户名，必须唯一且不能为空
+        type: string
+    type: object
+  order.CreateOrderInput:
+    properties:
+      address_id:
+        description: 收货地址 ID
+        type: integer
+    required:
+    - address_id
+    type: object
+  order.ReviewOrderInput:
+    properties:
+      content:
+        type: string
+      rating:
+        type: integer
+    type: object
+  order.UpdateOrderStatusInput:
+    properties:
+      status:
+        type: integer
+    required:
+    - status
+    type: object
+  product.CreateProductInput:
+    properties:
+      category_id:
+        type: integer
+      cover_image:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      skus:
+        description: 商品 SKU 列表
+        items:
+          $ref: '#/definitions/product.ProductSKUInput'
+        type: array
+      stock:
+        type: integer
+    required:
+    - category_id
+    - name
+    - price
+    - stock
+    type: object
+  product.ProductSKUInput:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+      specs:
+        description: JSON string
+        type: string
+      stock:
+        type: integer
+    required:
+    - name
+    - price
+    - specs
+    - stock
+    type: object
+  search.AddSearchHistoryInput:
+    properties:
+      keyword:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is the backend API for the Go Flutter Mall application.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Go Flutter Mall API
+  version: "1.0"
+paths:
+  /addresses:
+    get:
+      description: Get a list of shipping addresses for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Address'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Addresses
+      tags:
+      - Address
+    post:
+      consumes:
+      - application/json
+      description: Create a new shipping address
+      parameters:
+      - description: Address Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateAddressInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Address'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create Address
+      tags:
+      - Address
+  /addresses/{id}:
+    delete:
+      description: Delete a shipping address
+      parameters:
+      - description: Address ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Address
+      tags:
+      - Address
+    put:
+      consumes:
+      - application/json
+      description: Update an existing shipping address
+      parameters:
+      - description: Address ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Address Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateAddressInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Address'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Address
+      tags:
+      - Address
+  /auth/admin/login:
+    post:
+      consumes:
+      - application/json
+      description: Login as an administrator
+      parameters:
+      - description: Admin Credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/admin.AdminLoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Admin Login
+      tags:
+      - Admin
+  /auth/admin/stats:
+    get:
+      description: Get statistics for the admin dashboard
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admin.DashboardStats'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Dashboard Stats
+      tags:
+      - Admin
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with email/username and password
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User Login
+      tags:
+      - Auth
+  /cart:
+    get:
+      description: Get list of items in the user's shopping cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CartItem'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Cart
+      tags:
+      - Cart
+    post:
+      consumes:
+      - application/json
+      description: Add a product to the shopping cart or update quantity if exists
+      parameters:
+      - description: Cart Item Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/cart.AddToCartInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CartItem'
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CartItem'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add to Cart
+      tags:
+      - Cart
+  /cart/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update quantity or selected status of a cart item
+      parameters:
+      - description: Cart Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.CartItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CartItem'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Cart Item
+      tags:
+      - Cart
+  /chat/messages/{userId}:
+    get:
+      description: Get chat history with a specific user
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ChatMessage'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Messages
+      tags:
+      - Chat
+  /chat/notification:
+    post:
+      consumes:
+      - application/json
+      description: Send a system notification to a user
+      parameters:
+      - description: Notification Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/chat.SendNotificationInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Send System Notification
+      tags:
+      - Chat
+  /chat/read:
+    put:
+      description: Mark all messages from admin as read for the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Mark Messages as Read
+      tags:
+      - Chat
+  /chat/users:
+    get:
+      description: Get a list of users who have chatted with the admin
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Chat Users
+      tags:
+      - Chat
+  /notifications:
+    get:
+      description: Get a list of notifications for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Notification'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Notifications
+      tags:
+      - Notification
+  /notifications/{id}/read:
+    put:
+      description: Mark a specific notification as read
+      parameters:
+      - description: Notification ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Mark Notification as Read
+      tags:
+      - Notification
+  /notifications/admin/all:
+    get:
+      description: Get a list of all system notifications (Admin only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Notification'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get All Notifications
+      tags:
+      - Notification
+  /notifications/admin/user/{userId}:
+    get:
+      description: Get notifications for a specific user (Admin only)
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Notification'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get User Notifications
+      tags:
+      - Notification
+  /notifications/unread-count:
+    get:
+      description: Get the count of unread notifications and chat messages
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              format: int64
+              type: integer
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Unread Count
+      tags:
+      - Notification
+  /orders:
+    get:
+      description: Get a list of orders for the authenticated user
+      parameters:
+      - description: Order Status
+        in: query
+        name: status
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Order List
+      tags:
+      - Order
+    post:
+      consumes:
+      - application/json
+      description: Create a new order from selected cart items
+      parameters:
+      - description: Order Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/order.CreateOrderInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create Order
+      tags:
+      - Order
+  /orders/{id}:
+    delete:
+      description: Delete an order (Admin only)
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Order
+      tags:
+      - Order
+    get:
+      description: Get detailed information of a specific order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Order Detail
+      tags:
+      - Order
+  /orders/{id}/after-sales:
+    post:
+      description: Apply for after-sales service for an order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Apply After-Sales
+      tags:
+      - Order
+  /orders/{id}/pay:
+    post:
+      description: Simulate payment for an order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Pay Order
+      tags:
+      - Order
+  /orders/{id}/receipt:
+    put:
+      description: Confirm receipt of an order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Confirm Receipt
+      tags:
+      - Order
+  /orders/{id}/review:
+    post:
+      consumes:
+      - application/json
+      description: Submit a review for an order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Review Content
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/order.ReviewOrderInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Review Order
+      tags:
+      - Order
+  /orders/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: Update the status of an order (Admin only)
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New Status
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/order.UpdateOrderStatusInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Order Status
+      tags:
+      - Order
+  /orders/admin/all:
+    get:
+      description: Get a list of all orders (Admin only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get All Orders
+      tags:
+      - Order
+  /orders/counts:
+    get:
+      description: Get the count of orders for each status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Order Counts
+      tags:
+      - Order
+  /products:
+    get:
+      description: Get a list of products with pagination and search
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Search keyword
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Product'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Product List
+      tags:
+      - Product
+    post:
+      consumes:
+      - application/json
+      description: Create a new product (Admin only)
+      parameters:
+      - description: Product Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/product.CreateProductInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Product'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create Product
+      tags:
+      - Product
+  /products/{id}:
+    delete:
+      description: Delete a product by ID (Admin only)
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete Product
+      tags:
+      - Product
+    get:
+      description: Get detailed information of a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Product Detail
+      tags:
+      - Product
+    put:
+      consumes:
+      - application/json
+      description: Update an existing product (Admin only)
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Product Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/product.CreateProductInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update Product
+      tags:
+      - Product
+  /products/{id}/reviews:
+    get:
+      description: Get a list of reviews for a specific product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Review'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Product Reviews
+      tags:
+      - Product
+  /search/history:
+    delete:
+      description: Clear all search history for the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Clear Search History
+      tags:
+      - Search
+    get:
+      description: Get the user's recent search history
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SearchHistory'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Search History
+      tags:
+      - Search
+    post:
+      consumes:
+      - application/json
+      description: Add a keyword to the user's search history
+      parameters:
+      - description: Search Keyword
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/search.AddSearchHistoryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add Search History
+      tags:
+      - Search
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
