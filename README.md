@@ -13,7 +13,6 @@
   <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-10.jpg" width="360" />
   <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-11.jpg" width="360" />
   <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-12.jpg" width="360" />
-  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-13.jpg" width="360" />
   <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-14.jpg" width="360" />
   <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-15.jpg" width="360" />
 </div>
