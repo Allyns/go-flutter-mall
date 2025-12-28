@@ -1,5 +1,23 @@
 # Go-Flutter 商城项目说明文档
 
+<div>
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-1.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-2.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-3.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-4.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-5.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-6.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-7.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-8.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-9.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-10.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-11.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-12.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-13.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-14.jpg" width="360" />
+  <img src="https://github.com/Allyns/go-flutter-mall/blob/main/imageFile/20251228-191847.976-15.jpg" width="360" />
+</div>
+
 ## 1. 项目概述
 本项目是一个功能完善的电商商城系统，采用前后端分离架构，注重性能与用户体验。
 - **后端**: Go (Gin + GORM)
