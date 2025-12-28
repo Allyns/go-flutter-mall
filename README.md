@@ -24,6 +24,22 @@
 - **数据库**: PostgreSQL
 - **客户端**: Flutter (Android/iOS)
 
+## 1.1 开发者教程文档 (Developer Guides)
+本项目包含详细的技术栈使用指南，位于 `backend/` 目录下，建议开发者阅读：
+
+| 分类 | 文档链接 | 说明 |
+| :--- | :--- | :--- |
+| **语言基础** | [Go 语言基础与实战](backend/GO_TUTORIAL.md) | Go 语法基础、并发编程与项目实战 |
+| **Web 框架** | [Gin 框架使用指南](backend/GIN_GUIDE.md) | 路由、中间件、请求处理 |
+| **核心组件** | [Viper 配置管理](backend/VIPER_GUIDE.md) | 环境配置加载与管理 |
+| **API 文档** | [Swagger 使用指南](backend/SWAGGER_GUIDE.md) | 接口文档生成与 Swagger UI 集成 |
+| **数据库** | [PostgreSQL 使用指南](backend/POSTGRESQL_GUIDE.md) | 核心关系型数据库设计与使用 |
+| **ORM 框架** | [GORM (PostgreSQL) 指南](backend/GORM_GUIDE.md) | 模型定义、CRUD、事务与关联查询 |
+| **NoSQL** | [MongoDB 使用指南](backend/MONGODB_GUIDE.md) | 非结构化数据（日志、聊天）存储 |
+| **缓存/队列** | [Redis 使用指南](backend/REDIS_GUIDE.md) | 缓存、分布式锁与延时队列 |
+| **消息队列** | [Kafka 使用指南](backend/KAFKA_GUIDE.md) | 异步消息解耦与削峰填谷 |
+| **安全鉴权** | [JWT 鉴权指南](backend/JWT_GUIDE.md) | Token 生成、校验与中间件保护 |
+
 ## 2. 技术栈详细选型
 
 ### 2.1 后端 (Backend)
